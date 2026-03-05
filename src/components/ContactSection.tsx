@@ -45,9 +45,13 @@ const ContactSection = () => {
             <div className="pt-4">
               <p className="text-sm font-semibold text-foreground mb-3">Follow Us</p>
               <div className="flex gap-3">
-                {[Facebook, Instagram, Youtube].map((Icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors text-primary">
-                    <Icon className="w-5 h-5" />
+                {[
+                  { Icon: Facebook, url: "https://www.facebook.com/kaarekamal/" },
+                  { Icon: Instagram, url: "#" },
+                  { Icon: Youtube, url: "#" },
+                ].map((item, i) => (
+                  <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors text-primary">
+                    <item.Icon className="w-5 h-5" />
                   </a>
                 ))}
               </div>
