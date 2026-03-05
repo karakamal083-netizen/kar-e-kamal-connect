@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import { Heart, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroBg from "@/assets/hero-bg.jpg";
 
-const HeroSection = () => (
+interface HeroSectionProps {
+  heroImage: string;
+}
+
+const HeroSection = ({ heroImage }: HeroSectionProps) => (
   <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <img src={heroBg} alt="Kaar-e-Kamal volunteers helping families" className="absolute inset-0 w-full h-full object-cover" />
+    <img src={heroImage} alt="Kaar-e-Kamal volunteers helping families" className="absolute inset-0 w-full h-full object-cover" />
     <div className="absolute inset-0 hero-overlay" />
 
     <div className="relative z-10 container text-center py-20">

@@ -1,29 +1,29 @@
 import { motion } from "framer-motion";
-import orphanCare from "@/assets/orphan-care.jpg";
-import educationSupport from "@/assets/education-support.jpg";
-import skillsCenter from "@/assets/skills-center.jpg";
-import medicalCamp from "@/assets/medical-camp.jpg";
+
+interface ProjectsSectionProps {
+  getImage: (key: string) => string;
+}
 
 const projects = [
   {
-    img: orphanCare, title: "Alif Home Care", subtitle: "Orphan Support Home",
+    imgKey: "orphan-care", title: "Alif Home Care", subtitle: "Orphan Support Home",
     points: ["Safe and supportive home for orphaned children", "Quality education and training", "Nutritious meals and comfortable living"],
   },
   {
-    img: educationSupport, title: "Alif School of Excellence", subtitle: "Education Project",
+    imgKey: "education-support", title: "Alif School of Excellence", subtitle: "Education Project",
     points: ["Activity-based learning", "Sports Day & Speech Competitions", "Building students' confidence"],
   },
   {
-    img: skillsCenter, title: "Alif Skills Center", subtitle: "Women Skills Training",
+    imgKey: "skills-center", title: "Alif Skills Center", subtitle: "Women Skills Training",
     points: ["Empower women with modern skills", "Financial independence training", "Market-relevant skill development"],
   },
   {
-    img: medicalCamp, title: "Bait-ul-Shifa", subtitle: "Low-Cost Medical Dispensary",
+    imgKey: "medical-camp", title: "Bait-ul-Shifa", subtitle: "Low-Cost Medical Dispensary",
     points: ["Medicines for just ₨50", "Lab testing and medical check-ups", "Medical camps for accessible healthcare"],
   },
 ];
 
-const ProjectsSection = () => (
+const ProjectsSection = ({ getImage }: ProjectsSectionProps) => (
   <section id="projects" className="py-20 bg-secondary">
     <div className="container">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
@@ -35,7 +35,7 @@ const ProjectsSection = () => (
         {projects.map((p, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
             className="bg-card rounded-lg overflow-hidden shadow-card border flex flex-col sm:flex-row">
-            <img src={p.img} alt={p.title} className="sm:w-48 h-48 sm:h-auto object-cover" />
+            <img src={getImage(p.imgKey)} alt={p.title} className="sm:w-48 h-48 sm:h-auto object-cover" />
             <div className="p-6 flex-1">
               <p className="text-primary text-xs font-semibold tracking-widest uppercase mb-1">{p.subtitle}</p>
               <h3 className="font-heading text-xl font-bold text-foreground mb-3">{p.title}</h3>

@@ -9,21 +9,26 @@ import GallerySection from "@/components/GallerySection";
 import GetInvolvedSection from "@/components/GetInvolvedSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import { useSiteImages } from "@/hooks/use-site-images";
 
-const Index = () => (
-  <>
-    <Navbar />
-    <HeroSection />
-    <StatsSection />
-    <AboutSection />
-    <DomainsSection />
-    <CampaignsSection />
-    <ProjectsSection />
-    <GallerySection />
-    <GetInvolvedSection />
-    <ContactSection />
-    <Footer />
-  </>
-);
+const Index = () => {
+  const { getImage } = useSiteImages();
+
+  return (
+    <>
+      <Navbar />
+      <HeroSection heroImage={getImage("hero-bg")} />
+      <StatsSection />
+      <AboutSection />
+      <DomainsSection />
+      <CampaignsSection getImage={getImage} />
+      <ProjectsSection getImage={getImage} />
+      <GallerySection getImage={getImage} />
+      <GetInvolvedSection />
+      <ContactSection />
+      <Footer />
+    </>
+  );
+};
 
 export default Index;

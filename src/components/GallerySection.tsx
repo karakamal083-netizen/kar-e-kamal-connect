@@ -1,25 +1,21 @@
 import { motion } from "framer-motion";
-import heroBg from "@/assets/hero-bg.jpg";
-import rationDelivery from "@/assets/ration-delivery.jpg";
-import medicalCamp from "@/assets/medical-camp.jpg";
-import educationSupport from "@/assets/education-support.jpg";
-import skillsCenter from "@/assets/skills-center.jpg";
-import orphanCare from "@/assets/orphan-care.jpg";
-import winterDrive from "@/assets/winter-drive.jpg";
-import floodRelief from "@/assets/flood-relief.jpg";
 
-const images = [
-  { src: heroBg, alt: "Community service" },
-  { src: rationDelivery, alt: "Ration delivery" },
-  { src: medicalCamp, alt: "Medical camp" },
-  { src: educationSupport, alt: "Education support" },
-  { src: skillsCenter, alt: "Skills training" },
-  { src: orphanCare, alt: "Orphan care" },
-  { src: winterDrive, alt: "Winter drive" },
-  { src: floodRelief, alt: "Flood relief" },
+interface GallerySectionProps {
+  getImage: (key: string) => string;
+}
+
+const imageKeys = [
+  { key: "hero-bg", alt: "Community service" },
+  { key: "ration-delivery", alt: "Ration delivery" },
+  { key: "medical-camp", alt: "Medical camp" },
+  { key: "education-support", alt: "Education support" },
+  { key: "skills-center", alt: "Skills training" },
+  { key: "orphan-care", alt: "Orphan care" },
+  { key: "winter-drive", alt: "Winter drive" },
+  { key: "flood-relief", alt: "Flood relief" },
 ];
 
-const GallerySection = () => (
+const GallerySection = ({ getImage }: GallerySectionProps) => (
   <section id="gallery" className="py-20 bg-background">
     <div className="container">
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
@@ -28,10 +24,10 @@ const GallerySection = () => (
       </motion.div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {images.map((img, i) => (
+        {imageKeys.map((img, i) => (
           <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
             className="rounded-lg overflow-hidden aspect-square group">
-            <img src={img.src} alt={img.alt} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <img src={getImage(img.key)} alt={img.alt} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
           </motion.div>
         ))}
       </div>
