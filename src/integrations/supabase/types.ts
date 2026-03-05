@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      site_content: {
+        Row: {
+          category: string
+          content_key: string
+          content_value: string
+          created_at: string
+          id: string
+          label: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content_key: string
+          content_value?: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content_key?: string
+          content_value?: string
+          created_at?: string
+          id?: string
+          label?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_images: {
         Row: {
           created_at: string

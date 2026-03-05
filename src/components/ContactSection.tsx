@@ -6,7 +6,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-const ContactSection = () => {
+interface ContactSectionProps {
+  getValue: (key: string) => string;
+}
+
+const ContactSection = ({ getValue }: ContactSectionProps) => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
@@ -15,6 +19,18 @@ const ContactSection = () => {
     toast({ title: "Message sent!", description: "We'll respond as soon as possible." });
     setForm({ name: "", email: "", message: "" });
   };
+
+  const contactInfo = [
+    { icon: MapPin, label: "Location", value: getValue("contact_location") },
+    { icon: Phone, label: "Phone", value: getValue("contact_phone") },
+    { icon: Mail, label: "Email", value: getValue("contact_email") },
+  ];
+
+  const socials = [
+    { Icon: Facebook, url: getValue("social_facebook") },
+    { Icon: Instagram, url: getValue("social_instagram") },
+    { Icon: Youtube, url: getValue("social_youtube") },
+  ];
 
   return (
     <section id="contact" className="py-20 bg-background">
@@ -26,11 +42,7 @@ const ContactSection = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
           <div className="space-y-6">
-            {[
-              { icon: MapPin, label: "Location", value: "Khanpur Region, Punjab, Pakistan" },
-              { icon: Phone, label: "Phone", value: "0324-9420425" },
-              { icon: Mail, label: "Email", value: "kaarekamal@gmail.com" },
-            ].map((item, i) => (
+            {contactInfo.map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <item.icon className="w-5 h-5 text-primary" />
@@ -45,11 +57,7 @@ const ContactSection = () => {
             <div className="pt-4">
               <p className="text-sm font-semibold text-foreground mb-3">Follow Us</p>
               <div className="flex gap-3">
-                {[
-                  { Icon: Facebook, url: "https://www.facebook.com/kaarekamal/" },
-                  { Icon: Instagram, url: "#" },
-                  { Icon: Youtube, url: "#" },
-                ].map((item, i) => (
+                {socials.map((item, i) => (
                   <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors text-primary">
                     <item.Icon className="w-5 h-5" />
                   </a>
