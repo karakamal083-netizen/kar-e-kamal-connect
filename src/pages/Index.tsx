@@ -10,22 +10,24 @@ import GetInvolvedSection from "@/components/GetInvolvedSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import { useSiteImages } from "@/hooks/use-site-images";
+import { useSiteContent } from "@/hooks/use-site-content";
 
 const Index = () => {
   const { getImage } = useSiteImages();
+  const { getValue, loading } = useSiteContent();
 
   return (
     <>
       <Navbar />
-      <HeroSection heroImage={getImage("hero-bg")} />
-      <StatsSection />
-      <AboutSection />
+      <HeroSection heroImage={getImage("hero-bg")} getValue={getValue} />
+      <StatsSection getValue={getValue} />
+      <AboutSection getValue={getValue} />
       <DomainsSection />
       <CampaignsSection getImage={getImage} />
       <ProjectsSection getImage={getImage} />
       <GallerySection getImage={getImage} />
       <GetInvolvedSection />
-      <ContactSection />
+      <ContactSection getValue={getValue} />
       <Footer />
     </>
   );
