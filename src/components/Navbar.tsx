@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.jpg";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -20,7 +21,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-md border-b">
       <div className="container flex items-center justify-between h-16">
         <a href="#home" className="flex items-center gap-2 font-heading text-xl font-bold text-primary">
-          <Heart className="w-6 h-6 fill-primary text-primary" />
+          <img src={logo} alt="Kaar-e-Kamal logo" className="w-10 h-10 object-contain" />
           Kaar-e-Kamal
         </a>
 
