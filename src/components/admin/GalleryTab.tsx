@@ -4,6 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Loader2, Trash2, Image, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface GalleryImage {
   id: string;
@@ -12,11 +29,74 @@ interface GalleryImage {
   sort_order: number;
 }
 
+const SortableItem = ({
+  img,
+  deleting,
+  onDelete,
+  onCaptionChange,
+}: {
+  img: GalleryImage;
+  deleting: string | null;
+  onDelete: (id: string) => void;
+  onCaptionChange: (id: string, caption: string) => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: img.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="bg-card rounded-lg border shadow-card overflow-hidden group">
+      <div className="aspect-square bg-muted relative">
+        <img src={img.image_url} alt={img.caption} className="w-full h-full object-cover" />
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 bg-foreground/60 text-primary-foreground rounded p-1 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <GripVertical className="w-4 h-4" />
+        </div>
+        {deleting === img.id && (
+          <div className="absolute inset-0 bg-foreground/50 flex items-center justify-center">
+            <Loader2 className="w-6 h-6 text-primary-foreground animate-spin" />
+          </div>
+        )}
+      </div>
+      <div className="p-3 space-y-2">
+        <Input
+          value={img.caption}
+          onChange={(e) => onCaptionChange(img.id, e.target.value)}
+          placeholder="Caption"
+          className="text-xs h-8"
+        />
+        <Button
+          variant="destructive"
+          size="sm"
+          className="w-full gap-1"
+          onClick={() => onDelete(img.id)}
+          disabled={deleting === img.id}
+        >
+          <Trash2 className="w-3.5 h-3.5" /> Remove
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const GalleryTab = () => {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   const fetchGallery = useCallback(async () => {
     const { data } = await supabase
@@ -29,6 +109,24 @@ const GalleryTab = () => {
   useEffect(() => {
     fetchGallery();
   }, [fetchGallery]);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = images.findIndex((i) => i.id === active.id);
+    const newIndex = images.findIndex((i) => i.id === over.id);
+    const reordered = arrayMove(images, oldIndex, newIndex);
+
+    setImages(reordered);
+
+    // Persist new order
+    for (let i = 0; i < reordered.length; i++) {
+      if (reordered[i].sort_order !== i) {
+        await supabase.from("gallery_images").update({ sort_order: i }).eq("id", reordered[i].id);
+      }
+    }
+  };
 
   const handleUpload = async (files: FileList) => {
     setUploading(true);
@@ -109,41 +207,25 @@ const GalleryTab = () => {
           <p className="text-sm">No gallery images yet. Upload some above!</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {images.map((img) => (
-            <div key={img.id} className="bg-card rounded-lg border shadow-card overflow-hidden group">
-              <div className="aspect-square bg-muted relative">
-                <img src={img.image_url} alt={img.caption} className="w-full h-full object-cover" />
-                {deleting === img.id && (
-                  <div className="absolute inset-0 bg-foreground/50 flex items-center justify-center">
-                    <Loader2 className="w-6 h-6 text-primary-foreground animate-spin" />
-                  </div>
-                )}
-              </div>
-              <div className="p-3 space-y-2">
-                <Input
-                  value={img.caption}
-                  onChange={(e) => handleCaptionChange(img.id, e.target.value)}
-                  placeholder="Caption"
-                  className="text-xs h-8"
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={images.map((i) => i.id)} strategy={rectSortingStrategy}>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {images.map((img) => (
+                <SortableItem
+                  key={img.id}
+                  img={img}
+                  deleting={deleting}
+                  onDelete={handleDelete}
+                  onCaptionChange={handleCaptionChange}
                 />
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="w-full gap-1"
-                  onClick={() => handleDelete(img.id)}
-                  disabled={deleting === img.id}
-                >
-                  <Trash2 className="w-3.5 h-3.5" /> Remove
-                </Button>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       <p className="text-xs text-muted-foreground">
-        {images.length} image{images.length !== 1 ? "s" : ""} in gallery
+        {images.length} image{images.length !== 1 ? "s" : ""} in gallery · Drag to reorder
       </p>
     </div>
   );
