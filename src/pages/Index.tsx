@@ -25,7 +25,7 @@ const Index = () => {
       <DomainsSection />
       <CampaignsSection getImage={getImage} />
       <ProjectsSection getImage={getImage} />
-      <GallerySection getImage={getImage} />
+      <GallerySection />
       <GetInvolvedSection />
       <ContactSection getValue={getValue} />
       <Footer />

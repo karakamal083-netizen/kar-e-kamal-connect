@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, LogOut, Image, Loader2, Save, ImageIcon, Type, BarChart3, Phone } from "lucide-react";
+import { Upload, LogOut, Image, Loader2, Save, ImageIcon, Type, BarChart3, Phone, Images } from "lucide-react";
 import logo from "@/assets/logo.jpg";
+import GalleryTab from "@/components/admin/GalleryTab";
 
 const IMAGE_SLOTS = [
   { key: "hero-bg", label: "Hero Background" },
@@ -51,7 +52,7 @@ const CONTENT_SECTIONS = {
   ],
 };
 
-type Tab = "images" | "hero" | "about" | "stats" | "contact";
+type Tab = "images" | "gallery" | "hero" | "about" | "stats" | "contact";
 
 interface SiteImage {
   slot_key: string;
@@ -182,6 +183,7 @@ const AdminPanel = () => {
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: "images", label: "Images", icon: <ImageIcon className="w-4 h-4" /> },
+    { key: "gallery", label: "Gallery", icon: <Images className="w-4 h-4" /> },
     { key: "hero", label: "Hero", icon: <Type className="w-4 h-4" /> },
     { key: "about", label: "About", icon: <Type className="w-4 h-4" /> },
     { key: "stats", label: "Stats", icon: <BarChart3 className="w-4 h-4" /> },
@@ -269,8 +271,11 @@ const AdminPanel = () => {
           </div>
         )}
 
+        {/* Gallery Tab */}
+        {activeTab === "gallery" && <GalleryTab />}
+
         {/* Content Tabs */}
-        {activeTab !== "images" && (
+        {activeTab !== "images" && activeTab !== "gallery" && (
           <div className="max-w-2xl">
             <div className="bg-card rounded-lg border p-6 space-y-5">
               {CONTENT_SECTIONS[activeTab]?.map((field) => (
