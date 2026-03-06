@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube } from "lucide-react";
+import { MapPin, Phone, Mail, Facebook, Instagram, Youtube, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ContactSectionProps {
   getValue: (key: string) => string;
@@ -13,9 +14,21 @@ interface ContactSectionProps {
 const ContactSection = ({ getValue }: ContactSectionProps) => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    const { error } = await supabase.from("contact_submissions").insert({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      message: form.message.trim(),
+    });
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Failed to send", description: error.message, variant: "destructive" });
+      return;
+    }
     toast({ title: "Message sent!", description: "We'll respond as soon as possible." });
     setForm({ name: "", email: "", message: "" });
   };
@@ -71,7 +84,10 @@ const ContactSection = ({ getValue }: ContactSectionProps) => {
             <Input placeholder="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             <Input type="email" placeholder="Your Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             <Textarea placeholder="Your Message" rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
-            <Button type="submit" size="lg" className="w-full">Send Message</Button>
+            <Button type="submit" size="lg" className="w-full gap-1.5" disabled={submitting}>
+              {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+              {submitting ? "Sending..." : "Send Message"}
+            </Button>
           </motion.form>
         </div>
       </div>

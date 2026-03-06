@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, LogOut, Image, Loader2, Save, ImageIcon, Type, BarChart3, Phone, Images } from "lucide-react";
+import { Upload, LogOut, Image, Loader2, Save, ImageIcon, Type, BarChart3, Phone, Images, Inbox } from "lucide-react";
 import logo from "@/assets/logo.jpg";
 import GalleryTab from "@/components/admin/GalleryTab";
+import SubmissionsTab from "@/components/admin/SubmissionsTab";
 
 const IMAGE_SLOTS = [
   { key: "hero-bg", label: "Hero Background" },
@@ -52,7 +53,7 @@ const CONTENT_SECTIONS = {
   ],
 };
 
-type Tab = "images" | "gallery" | "hero" | "about" | "stats" | "contact";
+type Tab = "images" | "gallery" | "hero" | "about" | "stats" | "contact" | "submissions";
 
 interface SiteImage {
   slot_key: string;
@@ -188,6 +189,7 @@ const AdminPanel = () => {
     { key: "about", label: "About", icon: <Type className="w-4 h-4" /> },
     { key: "stats", label: "Stats", icon: <BarChart3 className="w-4 h-4" /> },
     { key: "contact", label: "Contact", icon: <Phone className="w-4 h-4" /> },
+    { key: "submissions", label: "Messages", icon: <Inbox className="w-4 h-4" /> },
   ];
 
   return (
@@ -274,8 +276,15 @@ const AdminPanel = () => {
         {/* Gallery Tab */}
         {activeTab === "gallery" && <GalleryTab />}
 
+        {/* Submissions Tab */}
+        {activeTab === "submissions" && (
+          <div className="max-w-3xl">
+            <SubmissionsTab />
+          </div>
+        )}
+
         {/* Content Tabs */}
-        {activeTab !== "images" && activeTab !== "gallery" && (
+        {activeTab !== "images" && activeTab !== "gallery" && activeTab !== "submissions" && (
           <div className="max-w-2xl">
             <div className="bg-card rounded-lg border p-6 space-y-5">
               {CONTENT_SECTIONS[activeTab]?.map((field) => (
