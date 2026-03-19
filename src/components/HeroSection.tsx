@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ heroImage, getValue }: HeroSectionProps) => {
   const title = getValue("hero_title");
-  const titleParts = title.split("\n");
+  const titleParts = title.split(/\\n|\n/);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
