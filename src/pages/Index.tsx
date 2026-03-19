@@ -6,6 +6,7 @@ import DomainsSection from "@/components/DomainsSection";
 import CampaignsSection from "@/components/CampaignsSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import GallerySection from "@/components/GallerySection";
+import VideoSection from "@/components/VideoSection";
 import GetInvolvedSection from "@/components/GetInvolvedSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
@@ -26,6 +27,7 @@ const Index = () => {
       <CampaignsSection getImage={getImage} />
       <ProjectsSection getImage={getImage} />
       <GallerySection />
+      <VideoSection />
       <GetInvolvedSection />
       <ContactSection getValue={getValue} />
       <Footer />
